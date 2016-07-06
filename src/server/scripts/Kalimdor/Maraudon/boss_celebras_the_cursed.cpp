@@ -26,11 +26,17 @@ EndScriptData */
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 
+enum npcs
+{
+     NPC_CELEBRAS_THE_REDEEMED = 13716
+};
+
 enum Spells
 {
     SPELL_WRATH                 = 21807,
     SPELL_ENTANGLINGROOTS       = 12747,
-    SPELL_CORRUPT_FORCES        = 21968
+    SPELL_CORRUPT_FORCES        = 21968,
+    SPELL_TWISTED_TRANQUILITY	= 21793
 };
 
 class celebras_the_cursed : public CreatureScript
@@ -55,11 +61,13 @@ public:
             WrathTimer = 8000;
             EntanglingRootsTimer = 2000;
             CorruptForcesTimer = 30000;
+            TwistedTranquilityTimer = 30000;
         }
 
         uint32 WrathTimer;
         uint32 EntanglingRootsTimer;
         uint32 CorruptForcesTimer;
+        uint32 TwistedTranquilityTimer;
 
         void Reset() override
         {
@@ -70,7 +78,7 @@ public:
 
         void JustDied(Unit* /*killer*/) override
         {
-            me->SummonCreature(13716, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 600000);
+            me->SummonCreature( NPC_CELEBRAS_THE_REDEEMED, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 600000);
         }
 
         void UpdateAI(uint32 diff) override
@@ -103,6 +111,16 @@ public:
                 CorruptForcesTimer = 20000;
             }
             else CorruptForcesTimer -= diff;
+            
+		//Twisted Tranquility
+	    if (TwistedTranquilityTimer <= diff)
+		{
+	    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+		DoCast(target, SPELL_TWISTED_TRANQUILITY;
+		TwistedTranquilityTimer = 30000;
+			}
+	    else TwistedTranquilityTimer -= diff;
+
 
             DoMeleeAttackIfReady();
         }
